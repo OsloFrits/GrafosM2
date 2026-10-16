@@ -1,13 +1,13 @@
 package visual;
 
-import grafo.Lista;
+import grafo.Grafo;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 public class JanelaGrafo {
 
-    public static void exibir(Lista lista) {
+    public static void exibir(Grafo grafo) {
 
         SwingUtilities.invokeLater(() -> {
 
@@ -21,7 +21,7 @@ public class JanelaGrafo {
 
             janela.setLocationRelativeTo(null);
 
-            PainelGrafo painel = new PainelGrafo(lista);
+            PainelGrafo painel = new PainelGrafo(grafo);
 
             janela.add(painel);
 

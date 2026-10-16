@@ -1,7 +1,7 @@
 package visual;
 
 import grafo.Linha;
-import grafo.Lista;
+import grafo.Grafo;
 import grafo.Node;
 
 import javax.swing.JPanel;
@@ -19,37 +19,37 @@ import java.util.Set;
 
 public class PainelGrafo extends JPanel {
 
-    private Lista lista;
+    private Grafo grafo;
     private Map<Node, Point> posicoes = new HashMap<>();
     private List<List<Node>> componentes;
     private List<Node> ordemDFS;
     private String titulo;
     private final int RAIO_VERTICE = 25;
 
-    public PainelGrafo(Lista lista) {
-        this.lista = lista;
+    public PainelGrafo(Grafo grafo) {
+        this.grafo = grafo;
         this.titulo = "Grafo";
         setBackground(Color.WHITE);
         calcularPosicoes();
     }
 
-    public PainelGrafo(Lista lista, String titulo) {
-        this.lista = lista;
+    public PainelGrafo(Grafo grafo, String titulo) {
+        this.grafo = grafo;
         this.titulo = titulo;
         setBackground(Color.WHITE);
         calcularPosicoes();
     }
 
-    public PainelGrafo(Lista lista, List<Node> ordemDFS, boolean ehDFS) {
-        this.lista = lista;
+    public PainelGrafo(Grafo grafo, List<Node> ordemDFS, boolean ehDFS) {
+        this.grafo = grafo;
         this.ordemDFS = ordemDFS;
         this.titulo = "DFS";
         setBackground(Color.WHITE);
         calcularPosicoes();
     }
 
-    public PainelGrafo(Lista lista, List<List<Node>> componentes) {
-        this.lista = lista;
+    public PainelGrafo(Grafo grafo, List<List<Node>> componentes) {
+        this.grafo = grafo;
         this.componentes = componentes;
         this.titulo = "aplicacoes.Roy";
         setBackground(Color.WHITE);
@@ -59,7 +59,7 @@ public class PainelGrafo extends JPanel {
     private void calcularPosicoes() {
         posicoes.clear();
 
-        List<Node> vertices = lista.getListaDeAdjacencia();
+        List<Node> vertices = grafo.getListaDeAdjacencia();
 
         if (vertices.isEmpty()) {
             return;
@@ -139,7 +139,7 @@ public class PainelGrafo extends JPanel {
             );
 
             g2.drawString(
-                    "Peso total: " + lista.getPesoTotal(),
+                    "Peso total: " + grafo.getPesoTotal(),
                     20,
                     55
             );
@@ -149,7 +149,7 @@ public class PainelGrafo extends JPanel {
     private void desenharArestas(Graphics2D g2) {
         Set<Linha> arestasDesenhadas = new HashSet<>();
 
-        for (Node origem : lista.getListaDeAdjacencia()) {
+        for (Node origem : grafo.getListaDeAdjacencia()) {
             Point pontoOrigem = posicoes.get(origem);
 
             if (pontoOrigem == null) {
@@ -234,7 +234,7 @@ public class PainelGrafo extends JPanel {
                 meioY
         );
 
-        if (lista.isDirecionada()) {
+        if (grafo.isDirecionada()) {
             desenharSeta(
                     g2,
                     x1,
@@ -352,7 +352,7 @@ public class PainelGrafo extends JPanel {
     }
 
     private void desenharVertices(Graphics2D g2) {
-        for (Node vertice : lista.getListaDeAdjacencia()) {
+        for (Node vertice : grafo.getListaDeAdjacencia()) {
             Point ponto = posicoes.get(vertice);
 
             if (ponto == null) {

@@ -1,6 +1,6 @@
 package visual;
 
-import grafo.Lista;
+import grafo.Grafo;
 import grafo.Node;
 
 import javax.imageio.ImageIO;
@@ -13,7 +13,7 @@ import java.util.List;
 public class ImagemGrafo {
 
     public static void salvar(
-            Lista lista,
+            Grafo grafo,
             String caminho) {
 
         int largura = 800;
@@ -30,7 +30,7 @@ public class ImagemGrafo {
                 imagem.createGraphics();
 
         PainelGrafo painel =
-                new PainelGrafo(lista);
+                new PainelGrafo(grafo);
 
         painel.setSize(
                 largura,
@@ -48,7 +48,7 @@ public class ImagemGrafo {
     }
 
     public static void salvarAgm(
-            Lista lista,
+            Grafo grafo,
             String caminho) {
 
         int largura = 800;
@@ -66,7 +66,7 @@ public class ImagemGrafo {
 
         PainelGrafo painel =
                 new PainelGrafo(
-                        lista,
+                        grafo,
                         "AGM"
                 );
 
@@ -86,7 +86,7 @@ public class ImagemGrafo {
     }
 
     public static void salvarDFS(
-            Lista lista,
+            Grafo grafo,
             List<Node> ordem,
             String caminho) {
 
@@ -105,7 +105,7 @@ public class ImagemGrafo {
 
         PainelGrafo painel =
                 new PainelGrafo(
-                        lista,
+                        grafo,
                         ordem,
                         true
                 );
@@ -126,7 +126,7 @@ public class ImagemGrafo {
     }
 
     public static void salvarRoy(
-            Lista lista,
+            Grafo grafo,
             List<List<Node>> componentes,
             String caminho) {
 
@@ -145,7 +145,7 @@ public class ImagemGrafo {
 
         PainelGrafo painel =
                 new PainelGrafo(
-                        lista,
+                        grafo,
                         componentes
                 );
 

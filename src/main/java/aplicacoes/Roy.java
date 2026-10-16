@@ -177,7 +177,7 @@ public class aplicacoes.Roy {
     }
 }*/
 import grafo.Linha;
-import grafo.Lista;
+import grafo.Grafo;
 import grafo.Node;
 
 import java.util.ArrayList;
@@ -185,7 +185,7 @@ import java.util.List;
 
 public class Roy {
 
-    public static List<List<Node>> executar(Lista grafo) {
+    public static List<List<Node>> executar(Grafo grafo) {
 
         int quantidade = grafo.getListaDeAdjacencia().size();
         boolean[] usado = new boolean[quantidade];
@@ -252,7 +252,7 @@ public class Roy {
     }
 
     private static void buscaPositiva(
-            Lista grafo,
+            Grafo grafo,
             int atual,
             boolean[] visitados,
             boolean[] usado
@@ -295,7 +295,7 @@ public class Roy {
     }
 
     private static void buscaNegativa(
-            Lista grafo,
+            Grafo grafo,
             int atual,
             boolean[] visitados,
             boolean[] usado
@@ -338,7 +338,7 @@ public class Roy {
     }
 
     private static boolean existeAresta(
-            Lista grafo,
+            Grafo grafo,
             Node origem,
             Node destino
     ) {

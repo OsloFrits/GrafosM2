@@ -1,13 +1,13 @@
-import grafo.Lista;
+import grafo.Grafo;
 import grafo.Node;
 
 import java.util.ArrayList;
 
 public class GrafoTeste {
 
-    public static Lista criar(boolean direcionado) {
+    public static Grafo criar(boolean direcionado) {
 
-        Lista lista = new Lista(new ArrayList<>(), direcionado);
+        Grafo grafo = new Grafo(new ArrayList<>(), direcionado);
 
         Node a = new Node(1, "A");
         Node b = new Node(2, "B");
@@ -17,27 +17,27 @@ public class GrafoTeste {
         Node f = new Node(6, "F");
         Node g = new Node(7, "G");
 
-        lista.addVertice(a);
-        lista.addVertice(b);
-        lista.addVertice(c);
-        lista.addVertice(d);
-        lista.addVertice(e);
-        lista.addVertice(f);
-        lista.addVertice(g);
+        grafo.addVertice(a);
+        grafo.addVertice(b);
+        grafo.addVertice(c);
+        grafo.addVertice(d);
+        grafo.addVertice(e);
+        grafo.addVertice(f);
+        grafo.addVertice(g);
 
-        lista.addAresta(a, b, 7);
-        lista.addAresta(a, c, 4);
-        lista.addAresta(a, d, 9);
+        grafo.addAresta(a, b, 7);
+        grafo.addAresta(a, c, 4);
+        grafo.addAresta(a, d, 9);
 
-        lista.addAresta(b, c, 2);
-        lista.addAresta(b, e, 6);
+        grafo.addAresta(b, c, 2);
+        grafo.addAresta(b, e, 6);
 
-        lista.addAresta(c, d, 3);
-        lista.addAresta(c, f, 5);
+        grafo.addAresta(c, d, 3);
+        grafo.addAresta(c, f, 5);
 
-        lista.addAresta(d, e, 1);
-        lista.addAresta(e, g, 4);
+        grafo.addAresta(d, e, 1);
+        grafo.addAresta(e, g, 4);
 
-        return lista;
+        return grafo;
     }
 }

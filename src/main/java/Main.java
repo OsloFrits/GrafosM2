@@ -3,7 +3,7 @@ import aplicacoes.BuscaProfundidade;
 import aplicacoes.Matrizes;
 import aplicacoes.Roy;
 import grafo.Linha;
-import grafo.Lista;
+import grafo.Grafo;
 import grafo.Node;
 import visual.ImagemGrafo;
 
@@ -38,49 +38,49 @@ public class Main {
         }else{
             direcionado = false;
         }
-        Lista lista = new Lista(new ArrayList<>(), direcionado);
+        Grafo grafo = new Grafo(new ArrayList<>(), direcionado);
 
         int opcao;
         do {
-            mostrarMenu(lista);
+            mostrarMenu(grafo);
             opcao = lerInteiro("Opcao: ");
             switch (opcao) {
                 case 1:
-                    lista = GrafoTeste.criar(direcionado);
+                    grafo = GrafoTeste.criar(direcionado);
                     System.out.println("Grafo de teste carregado.");
                     break;
                 case 2:
-                    adicionarVertice(lista);
+                    adicionarVertice(grafo);
                     break;
                 case 3:
-                    removerVertice(lista);
+                    removerVertice(grafo);
                     break;
                 case 4:
-                    editarVertice(lista);
+                    editarVertice(grafo);
                     break;
                 case 5:
-                    adicionarAresta(lista);
+                    adicionarAresta(grafo);
                     break;
                 case 6:
-                    removerAresta(lista);
+                    removerAresta(grafo);
                     break;
                 case 7:
-                    editarAresta(lista);
+                    editarAresta(grafo);
                     break;
                 case 8:
-                    mostrarGrafo(lista);
+                    mostrarGrafo(grafo);
                     break;
                 case 9:
-                    mostrarMatrizes(lista);
+                    mostrarMatrizes(grafo);
                     break;
                 case 10:
-                    executarAGM(lista);
+                    executarAGM(grafo);
                     break;
                 case 11:
-                    executarDFS(lista);
+                    executarDFS(grafo);
                     break;
                 case 12:
-                    executarRoy(lista);
+                    executarRoy(grafo);
                     break;
                 case 0:
                     System.out.println("Programa encerrado.");
@@ -93,11 +93,11 @@ public class Main {
         scanner.close();
     }
 
-    public static void mostrarMenu(Lista lista) {
+    public static void mostrarMenu(Grafo grafo) {
 
         System.out.println("\n========== GRAFO ==========");
-        System.out.println("Vertices: " + lista.getVertices()
-                + " | Arestas: " + lista.getLinhas());
+        System.out.println("Vertices: " + grafo.getVertices()
+                + " | Arestas: " + grafo.getLinhas());
         System.out.println("----------------------------");
         System.out.println("1  - Carregar grafo de teste");
         System.out.println("2  - Adicionar vertice");
@@ -115,53 +115,53 @@ public class Main {
         System.out.println("============================");
     }
 
-    public static void adicionarVertice(Lista lista) {
+    public static void adicionarVertice(Grafo grafo) {
 
         System.out.println("\n--- ADICIONAR VERTICE ---");
 
         int id = lerInteiro("ID: ");
-        if (buscarVerticePorId(lista, id) != null) {
+        if (buscarVerticePorId(grafo, id) != null) {
             System.out.println("Ja existe um vertice com esse ID.");
             return;
         }
 
         String nome = lerTexto("Nome: ");
-        lista.addVertice(new Node(id, nome));
+        grafo.addVertice(new Node(id, nome));
         System.out.println("Vertice adicionado.");
     }
 
-    public static void removerVertice(Lista lista) {
+    public static void removerVertice(Grafo grafo) {
 
         System.out.println("\n--- REMOVER VERTICE ---");
 
-        if (lista.getVertices() == 0) {
+        if (grafo.getVertices() == 0) {
             System.out.println("O grafo esta vazio.");
             return;
         }
 
         int id = lerInteiro("ID: ");
-        Node vertice = buscarVerticePorId(lista, id);
+        Node vertice = buscarVerticePorId(grafo, id);
 
         if (vertice == null) {
             System.out.println("Vertice nao encontrado.");
             return;
         }
 
-        removerVerticeSeguro(lista, vertice);
+        removerVerticeSeguro(grafo, vertice);
         System.out.println("Vertice removido.");
     }
 
-    public static void editarVertice(Lista lista) {
+    public static void editarVertice(Grafo grafo) {
 
         System.out.println("\n--- EDITAR VERTICE ---");
 
-        if (lista.getVertices() == 0) {
+        if (grafo.getVertices() == 0) {
             System.out.println("O grafo esta vazio.");
             return;
         }
 
         int id = lerInteiro("ID: ");
-        Node vertice = buscarVerticePorId(lista, id);
+        Node vertice = buscarVerticePorId(grafo, id);
 
         if (vertice == null) {
             System.out.println("Vertice nao encontrado.");
@@ -175,17 +175,17 @@ public class Main {
         System.out.println("Vertice alterado.");
     }
 
-    public static void adicionarAresta(Lista lista) {
+    public static void adicionarAresta(Grafo grafo) {
 
         System.out.println("\n--- ADICIONAR ARESTA ---");
 
-        if (lista.getVertices() < 2) {
+        if (grafo.getVertices() < 2) {
             System.out.println("E necessario ter pelo menos 2 vertices.");
             return;
         }
 
         int idOrigem = lerInteiro("ID origem: ");
-        Node origem = buscarVerticePorId(lista, idOrigem);
+        Node origem = buscarVerticePorId(grafo, idOrigem);
 
         if (origem == null) {
             System.out.println("Origem nao encontrada.");
@@ -193,7 +193,7 @@ public class Main {
         }
 
         int idDestino = lerInteiro("ID destino: ");
-        Node destino = buscarVerticePorId(lista, idDestino);
+        Node destino = buscarVerticePorId(grafo, idDestino);
 
         if (destino == null) {
             System.out.println("Destino nao encontrado.");
@@ -201,15 +201,15 @@ public class Main {
         }
 
         int peso = lerInteiro("Peso: ");
-        lista.addAresta(origem, destino, peso);
+        grafo.addAresta(origem, destino, peso);
         System.out.println("Aresta adicionada.");
     }
 
-    public static void removerAresta(Lista lista) {
+    public static void removerAresta(Grafo grafo) {
 
         System.out.println("\n--- REMOVER ARESTA ---");
 
-        if (lista.getLinhas() == 0) {
+        if (grafo.getLinhas() == 0) {
             System.out.println("Nao existem arestas.");
             return;
         }
@@ -217,31 +217,31 @@ public class Main {
         int idOrigem = lerInteiro("ID origem: ");
         int idDestino = lerInteiro("ID destino: ");
 
-        Node origem = buscarVerticePorId(lista, idOrigem);
-        Node destino = buscarVerticePorId(lista, idDestino);
+        Node origem = buscarVerticePorId(grafo, idOrigem);
+        Node destino = buscarVerticePorId(grafo, idDestino);
 
         if (origem == null || destino == null) {
             System.out.println("Vertice nao encontrado.");
             return;
         }
 
-        Linha linha = buscarAresta(lista, origem, destino);
+        Linha linha = buscarAresta(grafo, origem, destino);
 
         if (linha == null) {
             System.out.println("Aresta nao encontrada.");
             return;
         }
 
-        lista.removeAresta(linha);
+        grafo.removeAresta(linha);
 
         System.out.println("Aresta removida.");
     }
 
-    public static void editarAresta(Lista lista) {
+    public static void editarAresta(Grafo grafo) {
 
         System.out.println("\n--- EDITAR ARESTA ---");
 
-        if (lista.getLinhas() == 0) {
+        if (grafo.getLinhas() == 0) {
             System.out.println("Nao existem arestas.");
             return;
         }
@@ -249,15 +249,15 @@ public class Main {
         int idOrigem = lerInteiro("ID origem: ");
         int idDestino = lerInteiro("ID destino: ");
 
-        Node origem = buscarVerticePorId(lista, idOrigem);
-        Node destino = buscarVerticePorId(lista, idDestino);
+        Node origem = buscarVerticePorId(grafo, idOrigem);
+        Node destino = buscarVerticePorId(grafo, idDestino);
 
         if (origem == null || destino == null) {
             System.out.println("Vertice nao encontrado.");
             return;
         }
 
-        Linha linha = buscarAresta(lista, origem, destino);
+        Linha linha = buscarAresta(grafo, origem, destino);
 
         if (linha == null) {
             System.out.println("Aresta nao encontrada.");
@@ -274,11 +274,11 @@ public class Main {
     }
 
     public static Node buscarVerticePorId(
-            Lista lista,
+            Grafo grafo,
             int id) {
 
         for (Node vertice :
-                lista.getListaDeAdjacencia()) {
+                grafo.getListaDeAdjacencia()) {
 
             if (vertice.getId() == id) {
                 return vertice;
@@ -289,17 +289,17 @@ public class Main {
     }
 
     public static Linha buscarAresta(
-            Lista lista,
+            Grafo grafo,
             Node origem,
             Node destino) {
 
         for (Node vertice :
-                lista.getListaDeAdjacencia()) {
+                grafo.getListaDeAdjacencia()) {
 
             for (Linha linha :
                     vertice.getAdjacencia()) {
 
-                if (lista.isDirecionada()) {
+                if (grafo.isDirecionada()) {
 
                     if (linha.getOrigem() == origem
                             && linha.getDestino() == destino) {
@@ -325,14 +325,14 @@ public class Main {
     }
 
     public static void removerVerticeSeguro(
-            Lista lista,
+            Grafo grafo,
             Node vertice) {
 
         List<Linha> linhasParaRemover =
                 new ArrayList<>();
 
         for (Node atual :
-                lista.getListaDeAdjacencia()) {
+                grafo.getListaDeAdjacencia()) {
 
             for (Linha linha :
                     atual.getAdjacencia()) {
@@ -359,25 +359,25 @@ public class Main {
                     .removeAdjacencia(linha);
         }
 
-        lista.getListaDeAdjacencia()
+        grafo.getListaDeAdjacencia()
                 .remove(vertice);
 
-        lista.setVertices(
-                lista.getListaDeAdjacencia().size()
+        grafo.setVertices(
+                grafo.getListaDeAdjacencia().size()
         );
 
-        lista.setLinhas(
+        grafo.setLinhas(
                 Math.max(
                         0,
-                        lista.getLinhas()
+                        grafo.getLinhas()
                                 - linhasParaRemover.size()
                 )
         );
     }
 
-    public static void mostrarGrafo(Lista lista) {
+    public static void mostrarGrafo(Grafo grafo) {
 
-        if (lista.getVertices() == 0) {
+        if (grafo.getVertices() == 0) {
             System.out.println("O grafo esta vazio.");
             return;
         }
@@ -385,7 +385,7 @@ public class Main {
         String arquivo = "grafo.png";
 
         ImagemGrafo.salvar(
-                lista,
+                grafo,
                 arquivo
         );
 
@@ -394,9 +394,9 @@ public class Main {
         );
     }
 
-    public static void mostrarMatrizes(Lista lista) {
+    public static void mostrarMatrizes(Grafo grafo) {
 
-        if (lista.getVertices() == 0) {
+        if (grafo.getVertices() == 0) {
             System.out.println("O grafo esta vazio.");
             return;
         }
@@ -406,7 +406,7 @@ public class Main {
         );
 
         int[][] matrizAdjacencia =
-                Matrizes.matrizAdjacencia(lista);
+                Matrizes.matrizAdjacencia(grafo);
 
         imprimirMatriz(
                 matrizAdjacencia
@@ -417,7 +417,7 @@ public class Main {
         );
 
         int[][] matrizIncidencia =
-                Matrizes.matrizIncidencia(lista);
+                Matrizes.matrizIncidencia(grafo);
 
         imprimirMatriz(
                 matrizIncidencia
@@ -439,16 +439,16 @@ public class Main {
         }
     }
 
-    public static void executarAGM(Lista lista) {
+    public static void executarAGM(Grafo grafo) {
 
-        if (lista.getVertices() == 0) {
+        if (grafo.getVertices() == 0) {
             System.out.println(
                     "O grafo esta vazio."
             );
             return;
         }
 
-        if (lista.isDirecionada()) {
+        if (grafo.isDirecionada()) {
 
             System.out.println(
                     "AGM nao pode ser executada em grafo direcionado."
@@ -461,8 +461,8 @@ public class Main {
                 "Calculando AGM..."
         );
 
-        Lista agm =
-                Agm.calcularAgm(lista);
+        Grafo agm =
+                Agm.calcularAgm(grafo);
 
         System.out.println(
                 "AGM calculada."
@@ -485,9 +485,9 @@ public class Main {
         );
     }
 
-    public static void executarDFS(Lista lista) {
+    public static void executarDFS(Grafo grafo) {
 
-        if (lista.getVertices() == 0) {
+        if (grafo.getVertices() == 0) {
 
             System.out.println(
                     "O grafo esta vazio."
@@ -505,7 +505,7 @@ public class Main {
 
         Node vertice =
                 buscarVerticePorId(
-                        lista,
+                        grafo,
                         id
                 );
 
@@ -519,12 +519,12 @@ public class Main {
         }
 
         int indice =
-                lista.getListaDeAdjacencia()
+                grafo.getListaDeAdjacencia()
                         .indexOf(vertice);
 
         List<Node> ordem =
                 BuscaProfundidade.executar(
-                        lista,
+                        grafo,
                         indice
                 );
 
@@ -535,7 +535,7 @@ public class Main {
         String arquivo = "DFS.png";
 
         ImagemGrafo.salvarDFS(
-                lista,
+                grafo,
                 ordem,
                 arquivo
         );
@@ -545,9 +545,9 @@ public class Main {
         );
     }
 
-    public static void executarRoy(Lista lista) {
+    public static void executarRoy(Grafo grafo) {
 
-        if (lista.getVertices() == 0) {
+        if (grafo.getVertices() == 0) {
 
             System.out.println(
                     "O grafo esta vazio."
@@ -561,7 +561,7 @@ public class Main {
         );
 
         List<List<Node>> componentes =
-                Roy.executar(lista);
+                Roy.executar(grafo);
 
         System.out.println(
                 "aplicacoes.Roy executado. Componentes encontrados: "
@@ -571,7 +571,7 @@ public class Main {
         String arquivo = "aplicacoes.Roy.png";
 
         ImagemGrafo.salvarRoy(
-                lista,
+                grafo,
                 componentes,
                 arquivo
         );

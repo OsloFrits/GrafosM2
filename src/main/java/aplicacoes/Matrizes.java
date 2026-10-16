@@ -1,7 +1,7 @@
 package aplicacoes;
 
 import grafo.Linha;
-import grafo.Lista;
+import grafo.Grafo;
 import grafo.Node;
 
 import java.util.ArrayList;
@@ -9,9 +9,9 @@ import java.util.List;
 
 public class Matrizes {
 
-    public static int[][] matrizAdjacencia(Lista lista) {//Resolver mega problema, como n direcionada ambos tem referencia da linha. lgo vai dar bomba
-        int [][] matriz = new int[lista.getVertices()][lista.getVertices()];
-        List<Node> listaDeAdjacencia = lista.getListaDeAdjacencia();
+    public static int[][] matrizAdjacencia(Grafo grafo) {//Resolver mega problema, como n direcionada ambos tem referencia da linha. lgo vai dar bomba
+        int [][] matriz = new int[grafo.getVertices()][grafo.getVertices()];
+        List<Node> listaDeAdjacencia = grafo.getListaDeAdjacencia();
 
         for(Node vertice : listaDeAdjacencia){
             List<Linha> ligacao = vertice.getAdjacencia();
@@ -20,7 +20,7 @@ public class Matrizes {
                  Node destino = linha.getOutraPonta(vertice); //Substituição do getDestino() por getOutraPonta()
                  int j = listaDeAdjacencia.indexOf(destino);
                  matriz[i][j] = 1;
-                 if(!lista.isDirecionada()){
+                 if(!grafo.isDirecionada()){
                     matriz[j][i] = 1;
                  }
             }
@@ -28,9 +28,9 @@ public class Matrizes {
         mostraMatriz(matriz, listaDeAdjacencia, "Matriz de adjacencia");
         return matriz;
     }
-    public static int[][] matrizIncidencia(Lista lista) {
-        int[][] matriz = new int[lista.getVertices()][lista.getLinhas()];
-        List<Node> listaDeAdjacencia = lista.getListaDeAdjacencia();
+    public static int[][] matrizIncidencia(Grafo grafo) {
+        int[][] matriz = new int[grafo.getVertices()][grafo.getLinhas()];
+        List<Node> listaDeAdjacencia = grafo.getListaDeAdjacencia();
         List<Linha> listaDeLigacoes = new ArrayList<>();
 
         for (Node vertice : listaDeAdjacencia) {
@@ -46,7 +46,7 @@ public class Matrizes {
             int destino = listaDeAdjacencia.indexOf(linha.getDestino());
 
             matriz[origem][j] = 1;
-            if(lista.isDirecionada()){
+            if(grafo.isDirecionada()){
                 matriz[destino][j] = -1;
             }else{
                 matriz[destino][j] = 1;

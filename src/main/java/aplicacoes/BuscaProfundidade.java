@@ -1,7 +1,7 @@
 package aplicacoes;
 
 import grafo.Linha;
-import grafo.Lista;
+import grafo.Grafo;
 import grafo.Node;
 
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.List;
 public class BuscaProfundidade {
 
     public static List<Node> executar(
-            Lista grafo,
+            Grafo grafo,
             int inicio) {
 
         int quantidade =
@@ -39,7 +39,7 @@ public class BuscaProfundidade {
     }
 
     private static void busca(
-            Lista grafo,
+            Grafo grafo,
             int atual,
             boolean[] visitados,
             List<Node> ordem) {
@@ -84,7 +84,7 @@ public class BuscaProfundidade {
     }
 
     private static boolean existeAresta(
-            Lista grafo,
+            Grafo grafo,
             Node origem,
             Node destino) {
 

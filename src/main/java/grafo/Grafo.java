@@ -2,13 +2,13 @@ package grafo;
 
 import java.util.List;
 
-public class Lista { //Colocar arqui funções de procura, mostrar e codigos q se aplicam no grafo
+public class Grafo { //Colocar arqui funções de procura, mostrar e codigos q se aplicam no grafo
     private List<Node> ListaDeAdjacencia;
     private int vertices =0, linhas=0;
     private int pesoTotal;
     private boolean direcionada;
 
-    public Lista(List<Node> listaDeAdjacencia, boolean direcionada) {
+    public Grafo(List<Node> listaDeAdjacencia, boolean direcionada) {
         ListaDeAdjacencia = listaDeAdjacencia;
         this.direcionada = direcionada;
     }

@@ -1,7 +1,7 @@
 package aplicacoes;
 
 import grafo.Linha;
-import grafo.Lista;
+import grafo.Grafo;
 import grafo.Node;
 
 import java.util.ArrayList;
@@ -9,16 +9,16 @@ import java.util.List;
 
 public class Agm {
 
-    public static Lista calcularAgm(Lista lista) {
+    public static Grafo calcularAgm(Grafo grafo) {
 
-        Lista agm =
-                new Lista(
+        Grafo agm =
+                new Grafo(
                         new ArrayList<>(),
                         false
                 );
 
         List<Node> listaDeAdjacencia =
-                lista.getListaDeAdjacencia();
+                grafo.getListaDeAdjacencia();
 
         List<Node> verticesVisitados =
                 new ArrayList<>();

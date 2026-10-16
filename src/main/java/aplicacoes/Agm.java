@@ -1,6 +1,6 @@
 package aplicacoes;
 
-import grafo.Linha;
+import grafo.Ligacao;
 import grafo.Grafo;
 import grafo.Node;
 
@@ -23,7 +23,7 @@ public class Agm {
         List<Node> verticesVisitados =
                 new ArrayList<>();
 
-        Linha menorLinha = null;
+        Ligacao menorLigacao = null;
         Node proximoVertice = null;
         Node origem = null;
         Node destino = null;
@@ -59,23 +59,23 @@ public class Agm {
             pesoMenor =
                     Integer.MAX_VALUE;
 
-            menorLinha = null;
+            menorLigacao = null;
             proximoVertice = null;
 
             for (Node vertice :
                     verticesVisitados) {
 
-                for (Linha linha :
+                for (Ligacao ligacao :
                         vertice.getAdjacencia()) {
 
                     Node outroVertice;
 
-                    if (linha.getOrigem() == vertice) {
+                    if (ligacao.getOrigem() == vertice) {
                         outroVertice =
-                                linha.getDestino();
+                                ligacao.getDestino();
                     } else {
                         outroVertice =
-                                linha.getOrigem();
+                                ligacao.getOrigem();
                     }
 
                     if (verticesVisitados.contains(
@@ -84,13 +84,13 @@ public class Agm {
                         continue;
                     }
 
-                    if (linha.getPeso() < pesoMenor) {
+                    if (ligacao.getPeso() < pesoMenor) {
 
                         pesoMenor =
-                                linha.getPeso();
+                                ligacao.getPeso();
 
-                        menorLinha =
-                                linha;
+                        menorLigacao =
+                                ligacao;
 
                         proximoVertice =
                                 outroVertice;
@@ -98,7 +98,7 @@ public class Agm {
                 }
             }
 
-            if (menorLinha == null) {
+            if (menorLigacao == null) {
                 break;
             }
 
@@ -107,7 +107,7 @@ public class Agm {
 
                 if (
                         vertice.getId()
-                                == menorLinha
+                                == menorLigacao
                                 .getOrigem()
                                 .getId()
                 ) {
@@ -121,7 +121,7 @@ public class Agm {
 
                 if (
                         vertice.getId()
-                                == menorLinha
+                                == menorLigacao
                                 .getDestino()
                                 .getId()
                 ) {
@@ -133,11 +133,11 @@ public class Agm {
             agm.addAresta(
                     origem,
                     destino,
-                    menorLinha.getPeso()
+                    menorLigacao.getPeso()
             );
 
             pesoTotal +=
-                    menorLinha.getPeso();
+                    menorLigacao.getPeso();
 
             verticesVisitados.add(
                     proximoVertice

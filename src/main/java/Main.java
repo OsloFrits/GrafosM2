@@ -2,7 +2,7 @@ import aplicacoes.Agm;
 import aplicacoes.BuscaProfundidade;
 import aplicacoes.Matrizes;
 import aplicacoes.Roy;
-import grafo.Linha;
+import grafo.Ligacao;
 import grafo.Grafo;
 import grafo.Node;
 import visual.ImagemGrafo;
@@ -225,14 +225,14 @@ public class Main {
             return;
         }
 
-        Linha linha = buscarAresta(grafo, origem, destino);
+        Ligacao ligacao = buscarAresta(grafo, origem, destino);
 
-        if (linha == null) {
+        if (ligacao == null) {
             System.out.println("Aresta nao encontrada.");
             return;
         }
 
-        grafo.removeAresta(linha);
+        grafo.removeAresta(ligacao);
 
         System.out.println("Aresta removida.");
     }
@@ -257,18 +257,18 @@ public class Main {
             return;
         }
 
-        Linha linha = buscarAresta(grafo, origem, destino);
+        Ligacao ligacao = buscarAresta(grafo, origem, destino);
 
-        if (linha == null) {
+        if (ligacao == null) {
             System.out.println("Aresta nao encontrada.");
             return;
         }
 
-        System.out.println("Peso atual: " + linha.getPeso());
+        System.out.println("Peso atual: " + ligacao.getPeso());
 
         int peso = lerInteiro("Novo peso: ");
 
-        linha.setPeso(peso);
+        ligacao.setPeso(peso);
 
         System.out.println("Aresta alterada.");
     }
@@ -288,7 +288,7 @@ public class Main {
         return null;
     }
 
-    public static Linha buscarAresta(
+    public static Ligacao buscarAresta(
             Grafo grafo,
             Node origem,
             Node destino) {
@@ -296,26 +296,26 @@ public class Main {
         for (Node vertice :
                 grafo.getListaDeAdjacencia()) {
 
-            for (Linha linha :
+            for (Ligacao ligacao :
                     vertice.getAdjacencia()) {
 
                 if (grafo.isDirecionada()) {
 
-                    if (linha.getOrigem() == origem
-                            && linha.getDestino() == destino) {
+                    if (ligacao.getOrigem() == origem
+                            && ligacao.getDestino() == destino) {
 
-                        return linha;
+                        return ligacao;
                     }
 
                 } else {
 
-                    if ((linha.getOrigem() == origem
-                            && linha.getDestino() == destino)
+                    if ((ligacao.getOrigem() == origem
+                            && ligacao.getDestino() == destino)
                             ||
-                            (linha.getOrigem() == destino
-                                    && linha.getDestino() == origem)) {
+                            (ligacao.getOrigem() == destino
+                                    && ligacao.getDestino() == origem)) {
 
-                        return linha;
+                        return ligacao;
                     }
                 }
             }
@@ -328,35 +328,35 @@ public class Main {
             Grafo grafo,
             Node vertice) {
 
-        List<Linha> linhasParaRemover =
+        List<Ligacao> linhasParaRemover =
                 new ArrayList<>();
 
         for (Node atual :
                 grafo.getListaDeAdjacencia()) {
 
-            for (Linha linha :
+            for (Ligacao ligacao :
                     atual.getAdjacencia()) {
 
-                if (linha.getOrigem() == vertice
-                        || linha.getDestino() == vertice) {
+                if (ligacao.getOrigem() == vertice
+                        || ligacao.getDestino() == vertice) {
 
                     if (!linhasParaRemover
-                            .contains(linha)) {
+                            .contains(ligacao)) {
 
-                        linhasParaRemover.add(linha);
+                        linhasParaRemover.add(ligacao);
                     }
                 }
             }
         }
 
-        for (Linha linha :
+        for (Ligacao ligacao :
                 linhasParaRemover) {
 
-            linha.getOrigem()
-                    .removeAdjacencia(linha);
+            ligacao.getOrigem()
+                    .removeAdjacencia(ligacao);
 
-            linha.getDestino()
-                    .removeAdjacencia(linha);
+            ligacao.getDestino()
+                    .removeAdjacencia(ligacao);
         }
 
         grafo.getListaDeAdjacencia()

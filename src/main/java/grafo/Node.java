@@ -1,12 +1,14 @@
 package grafo;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Node {
     private int id;
     private String nome;
-    private List<Linha> adjacencia;
+    private Color cor;
+    private List<Ligacao> adjacencia;
 
     public Node(int id, String nome) {
         this.id = id;
@@ -14,18 +16,18 @@ public class Node {
         this.adjacencia = new ArrayList<>();
     }
 
-    public void addAdjacencia(Linha Adjacencia) {
+    public void addAdjacencia(Ligacao Adjacencia) {
         this.adjacencia.add(Adjacencia);
     }
-    public void removeAdjacencia(Linha Adjacencia) {
+    public void removeAdjacencia(Ligacao Adjacencia) {
         this.adjacencia.remove(Adjacencia);
     }
 
-    public List<Linha> getAdjacencia() {
+    public List<Ligacao> getAdjacencia() {
         return adjacencia;
     }
 
-    public void setAdjacencia(List<Linha> adjacencia) {
+    public void setAdjacencia(List<Ligacao> adjacencia) {
         this.adjacencia = adjacencia;
     }
 
@@ -43,5 +45,12 @@ public class Node {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+    public Color getCor() {
+        return cor;
+    }
+
+    public void setCor(Color cor) {
+        this.cor = cor;
     }
 }

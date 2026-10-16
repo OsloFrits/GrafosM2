@@ -1,6 +1,6 @@
 package aplicacoes;
 
-import grafo.Linha;
+import grafo.Ligacao;
 import grafo.Grafo;
 import grafo.Node;
 
@@ -88,13 +88,13 @@ public class BuscaProfundidade {
             Node origem,
             Node destino) {
 
-        for (Linha linha :
+        for (Ligacao ligacao :
                 origem.getAdjacencia()) {
 
             if (grafo.isDirecionada()) {
 
-                if (linha.getOrigem() == origem
-                        && linha.getDestino() == destino) {
+                if (ligacao.getOrigem() == origem
+                        && ligacao.getDestino() == destino) {
 
                     return true;
                 }
@@ -102,13 +102,13 @@ public class BuscaProfundidade {
             } else {
 
                 if (
-                        (linha.getOrigem() == origem
-                                && linha.getDestino() == destino)
+                        (ligacao.getOrigem() == origem
+                                && ligacao.getDestino() == destino)
 
                                 ||
 
-                                (linha.getOrigem() == destino
-                                        && linha.getDestino() == origem)
+                                (ligacao.getOrigem() == destino
+                                        && ligacao.getDestino() == origem)
                 ) {
 
                     return true;

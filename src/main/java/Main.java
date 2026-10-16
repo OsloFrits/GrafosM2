@@ -1,3 +1,4 @@
+import Coloracao.Dsatur;
 import aplicacoes.Agm;
 import aplicacoes.BuscaProfundidade;
 import aplicacoes.Matrizes;
@@ -5,22 +6,11 @@ import aplicacoes.Roy;
 import grafo.Ligacao;
 import grafo.Grafo;
 import grafo.Node;
-import visual.ImagemGrafo;
+import visual.GraphStreamView;
 
-import java.awt.BorderLayout;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
 
 public class Main {
 
@@ -30,8 +20,9 @@ public class Main {
         char Resp='p';
         boolean direcionado;
         while(Resp != 'n' && Resp != 's') {
-            System.out.println("O grafo será direcionado?");
-            Resp = scanner.next().charAt(0);
+            System.out.println("O grafo será direcionado? (s/n)");
+            String linha = scanner.nextLine().trim().toLowerCase();
+            if (!linha.isEmpty()) Resp = linha.charAt(0);
         }
         if(Resp == 's'){
             direcionado = true;
@@ -82,6 +73,9 @@ public class Main {
                 case 12:
                     executarRoy(grafo);
                     break;
+                case 13:
+                    executarDsatur(grafo);
+                    break;
                 case 0:
                     System.out.println("Programa encerrado.");
                     break;
@@ -110,7 +104,8 @@ public class Main {
         System.out.println("9  - Mostrar matrizes");
         System.out.println("10 - Executar AGM");
         System.out.println("11 - Executar DFS");
-        System.out.println("12 - Executar aplicacoes.Roy");
+        System.out.println("12 - Executar Roy");
+        System.out.println("13 - Executar DSATUR (coloracao)");
         System.out.println("0  - Sair");
         System.out.println("============================");
     }
@@ -382,16 +377,7 @@ public class Main {
             return;
         }
 
-        String arquivo = "grafo.png";
-
-        ImagemGrafo.salvar(
-                grafo,
-                arquivo
-        );
-
-        mostrarImagem(
-                "imgs/" + arquivo
-        );
+        GraphStreamView.exibir(grafo);
     }
 
     public static void mostrarMatrizes(Grafo grafo) {
@@ -473,16 +459,7 @@ public class Main {
                         + agm.getPesoTotal()
         );
 
-        String arquivo = "AGM.png";
-
-        ImagemGrafo.salvarAgm(
-                agm,
-                arquivo
-        );
-
-        mostrarImagem(
-                "imgs/" + arquivo
-        );
+        GraphStreamView.exibirAgm(grafo, agm);
     }
 
     public static void executarDFS(Grafo grafo) {
@@ -532,17 +509,7 @@ public class Main {
                 "DFS executada."
         );
 
-        String arquivo = "DFS.png";
-
-        ImagemGrafo.salvarDFS(
-                grafo,
-                ordem,
-                arquivo
-        );
-
-        mostrarImagem(
-                "imgs/" + arquivo
-        );
+        GraphStreamView.exibirDFS(grafo, ordem);
     }
 
     public static void executarRoy(Grafo grafo) {
@@ -557,176 +524,40 @@ public class Main {
         }
 
         System.out.println(
-                "Executando aplicacoes.Roy..."
+                "Executando Roy..."
         );
 
         List<List<Node>> componentes =
                 Roy.executar(grafo);
 
         System.out.println(
-                "aplicacoes.Roy executado. Componentes encontrados: "
+                "Roy executado. Componentes encontrados: "
                         + componentes.size()
         );
 
-        String arquivo = "aplicacoes.Roy.png";
-
-        ImagemGrafo.salvarRoy(
-                grafo,
-                componentes,
-                arquivo
-        );
-
-        mostrarImagem(
-                "imgs/" + arquivo
-        );
+        GraphStreamView.exibirRoy(grafo, componentes);
     }
 
-    public static void mostrarImagem(
-            String caminho) {
+    public static void executarDsatur(Grafo grafo) {
 
-        File arquivo =
-                new File(caminho);
-
-        if (!arquivo.exists()) {
-
-            System.out.println(
-                    "Imagem nao encontrada: "
-                            + caminho
-            );
-
+        if (grafo.getVertices() == 0) {
+            System.out.println("O grafo esta vazio.");
             return;
         }
 
-        try {
+        // O enunciado pede o grafo ORIGINAL e o grafo COLORIDO: abre as duas janelas
+        GraphStreamView.exibir(grafo);
 
-            BufferedImage imagem =
-                    ImageIO.read(arquivo);
+        Dsatur dsatur = new Dsatur();
+        dsatur.dsatur(null, grafo, null);
 
-            if (imagem == null) {
-
-                System.out.println(
-                        "Nao foi possivel carregar a imagem."
-                );
-
-                return;
-            }
-
-            JFrame janela =
-                    new JFrame("Grafo");
-
-            int largura =
-                    imagem.getWidth();
-
-            int altura =
-                    imagem.getHeight();
-
-            int larguraMaxima = 1000;
-            int alturaMaxima = 700;
-
-            Image imagemExibicao =
-                    imagem;
-
-            if (largura > larguraMaxima
-                    || altura > alturaMaxima) {
-
-                double escalaX =
-                        (double) larguraMaxima
-                                / largura;
-
-                double escalaY =
-                        (double) alturaMaxima
-                                / altura;
-
-                double escala =
-                        Math.min(
-                                escalaX,
-                                escalaY
-                        );
-
-                largura =
-                        (int) (
-                                largura * escala
-                        );
-
-                altura =
-                        (int) (
-                                altura * escala
-                        );
-
-                imagemExibicao =
-                        imagem.getScaledInstance(
-                                largura,
-                                altura,
-                                Image.SCALE_SMOOTH
-                        );
-            }
-
-            JLabel label =
-                    new JLabel(
-                            new ImageIcon(
-                                    imagemExibicao
-                            )
-                    );
-
-            label.setHorizontalAlignment(
-                    SwingConstants.CENTER
-            );
-
-            janela.add(
-                    new JScrollPane(label),
-                    BorderLayout.CENTER
-            );
-
-            janela.setSize(
-                    Math.min(
-                            largura + 50,
-                            1100
-                    ),
-                    Math.min(
-                            altura + 80,
-                            800
-                    )
-            );
-
-            janela.setLocationRelativeTo(null);
-
-            janela.setDefaultCloseOperation(
-                    JFrame.DISPOSE_ON_CLOSE
-            );
-
-            janela.setVisible(true);
-
-            label.setFocusable(true);
-            label.requestFocusInWindow();
-
-            label.addKeyListener(
-                    new java.awt.event.KeyAdapter() {
-
-                        @Override
-                        public void keyPressed(
-                                java.awt.event.KeyEvent e) {
-
-                            if (e.getKeyCode()
-                                    == java.awt.event.KeyEvent.VK_ENTER) {
-
-                                janela.dispose();
-                            }
-                        }
-                    }
-            );
-
-            System.out.println(
-                    "Pressione ENTER na janela para voltar."
-            );
-
-        } catch (Exception e) {
-
-            System.out.println(
-                    "Erro ao carregar a imagem."
-            );
-
-            e.printStackTrace();
+        int cores = dsatur.getQuantidadeCores();
+        System.out.println("DSATUR executado. Cores usadas: " + cores);
+        for (Node v : grafo.getListaDeAdjacencia()) {
+            System.out.println("  " + v.getNome() + " -> cor " + v.getCor());
         }
+
+        GraphStreamView.exibirColoracao(grafo, cores);
     }
 
     public static int lerInteiro(

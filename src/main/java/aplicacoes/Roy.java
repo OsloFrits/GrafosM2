@@ -1,3 +1,5 @@
+package aplicacoes;
+
 import grafo.Ligacao;
 import grafo.Grafo;
 import grafo.Node;

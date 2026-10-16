@@ -1,10 +1,10 @@
 package grafo;
 
-public class Linha {
+public class Ligacao {
     private Node origem, destino;
     private int peso;
 
-    public Linha(Node origem, Node destino, int peso) {
+    public Ligacao(Node origem, Node destino, int peso) {
         this.origem = origem;
         this.destino = destino;
         this.peso = peso;

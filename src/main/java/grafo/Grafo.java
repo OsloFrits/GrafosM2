@@ -17,27 +17,27 @@ public class Grafo { //Colocar arqui funções de procura, mostrar e codigos q s
         this.vertices++;
     }
     public void addAresta(Node origem, Node destino, int peso) {//Nao sei se isso precisa estar dentro de lista ou fora??
-        Linha adjacencia = new Linha(origem, destino, peso);
+        Ligacao adjacencia = new Ligacao(origem, destino, peso);
         origem.addAdjacencia(adjacencia);
         if(!direcionada) {
             destino.addAdjacencia(adjacencia);
         }
         this.linhas++;
     }
-    public void removeAresta(Linha linha) {//como caralhos faço isso???
-        linha.getOrigem().removeAdjacencia(linha);
+    public void removeAresta(Ligacao ligacao) {//como caralhos faço isso???
+        ligacao.getOrigem().removeAdjacencia(ligacao);
         if(!direcionada) {
-            linha.getDestino().removeAdjacencia(linha);
+            ligacao.getDestino().removeAdjacencia(ligacao);
         }
         this.linhas--;
     }
     public void removeVertice(Node vertice) {//vou remover o vertice e todas as arestas ligadas a ele, mas COMO??? so deus sabe, e eu n sou deus. Pq eu existokkkkkkkkkkk
         this.ListaDeAdjacencia.remove(vertice);
-        for(Linha linha : vertice.getAdjacencia()) {
+        for(Ligacao ligacao : vertice.getAdjacencia()) {
             if(!direcionada){
-                vertice.removeAdjacencia(linha);
+                vertice.removeAdjacencia(ligacao);
             }else{
-                linha.getDestino().removeAdjacencia(linha);
+                ligacao.getDestino().removeAdjacencia(ligacao);
             }
         }
         this.vertices--;
@@ -47,12 +47,12 @@ public class Grafo { //Colocar arqui funções de procura, mostrar e codigos q s
         String R;
         for(Node vertice : ListaDeAdjacencia) {
             String V = String.valueOf(vertice.getId());
-         for(Linha linha : vertice.getAdjacencia()) { //usa getOutraPonta(vertice) em vez de getDestino(), para funcionar corretamente tanto direcionado quanto nao-direcionado
-                String W = String.valueOf(linha.getDestino().getId());
+         for(Ligacao ligacao : vertice.getAdjacencia()) { //usa getOutraPonta(vertice) em vez de getDestino(), para funcionar corretamente tanto direcionado quanto nao-direcionado
+                String W = String.valueOf(ligacao.getDestino().getId());
                 if(direcionada) {
-                    R = "--" + linha.getPeso() +  "->";
+                    R = "--" + ligacao.getPeso() +  "->";
                 }else{
-                    R = "--" + linha.getPeso() + "--";
+                    R = "--" + ligacao.getPeso() + "--";
                 }
                 System.out.println(V + " " + R + " " + W);
             }
@@ -60,8 +60,8 @@ public class Grafo { //Colocar arqui funções de procura, mostrar e codigos q s
     }
     public boolean loop() {
         for(Node vertice : ListaDeAdjacencia) {
-            for(Linha linha : vertice.getAdjacencia()) { //quando origem E destino sao o MESMO no (linha.getOrigem() == linha.getDestino()), nao quando o no atual apenas "e" o destino guardado na grafo.Linha
-                if(linha.getOrigem() == linha.getDestino()) {
+            for(Ligacao ligacao : vertice.getAdjacencia()) { //quando origem E destino sao o MESMO no (linha.getOrigem() == linha.getDestino()), nao quando o no atual apenas "e" o destino guardado na grafo.Linha
+                if(ligacao.getOrigem() == ligacao.getDestino()) {
                     return true;
                 }
             }

@@ -1,6 +1,6 @@
 package aplicacoes;
 
-import grafo.Linha;
+import grafo.Ligacao;
 import grafo.Grafo;
 import grafo.Node;
 
@@ -14,9 +14,9 @@ public class Matrizes {
         List<Node> listaDeAdjacencia = grafo.getListaDeAdjacencia();
 
         for(Node vertice : listaDeAdjacencia){
-            List<Linha> ligacao = vertice.getAdjacencia();
+            List<Ligacao> ligacao = vertice.getAdjacencia();
             int i = listaDeAdjacencia.indexOf(vertice);
-            for(Linha linha : ligacao){
+            for(Ligacao linha : ligacao){
                  Node destino = linha.getOutraPonta(vertice); //Substituição do getDestino() por getOutraPonta()
                  int j = listaDeAdjacencia.indexOf(destino);
                  matriz[i][j] = 1;
@@ -31,19 +31,19 @@ public class Matrizes {
     public static int[][] matrizIncidencia(Grafo grafo) {
         int[][] matriz = new int[grafo.getVertices()][grafo.getLinhas()];
         List<Node> listaDeAdjacencia = grafo.getListaDeAdjacencia();
-        List<Linha> listaDeLigacoes = new ArrayList<>();
+        List<Ligacao> listaDeLigacoes = new ArrayList<>();
 
         for (Node vertice : listaDeAdjacencia) {
-            for (Linha linha : vertice.getAdjacencia()) {
-                if (!listaDeLigacoes.contains(linha)) {
-                    listaDeLigacoes.add(linha);
+            for (Ligacao ligacao : vertice.getAdjacencia()) {
+                if (!listaDeLigacoes.contains(ligacao)) {
+                    listaDeLigacoes.add(ligacao);
                 }
             }
         }
-        for(Linha linha : listaDeLigacoes){
-            int j = listaDeLigacoes.indexOf(linha);
-            int origem = listaDeAdjacencia.indexOf(linha.getOrigem());
-            int destino = listaDeAdjacencia.indexOf(linha.getDestino());
+        for(Ligacao ligacao : listaDeLigacoes){
+            int j = listaDeLigacoes.indexOf(ligacao);
+            int origem = listaDeAdjacencia.indexOf(ligacao.getOrigem());
+            int destino = listaDeAdjacencia.indexOf(ligacao.getDestino());
 
             matriz[origem][j] = 1;
             if(grafo.isDirecionada()){

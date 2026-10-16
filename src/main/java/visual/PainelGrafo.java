@@ -1,6 +1,6 @@
 package visual;
 
-import grafo.Linha;
+import grafo.Ligacao;
 import grafo.Grafo;
 import grafo.Node;
 
@@ -147,7 +147,7 @@ public class PainelGrafo extends JPanel {
     }
 
     private void desenharArestas(Graphics2D g2) {
-        Set<Linha> arestasDesenhadas = new HashSet<>();
+        Set<Ligacao> arestasDesenhadas = new HashSet<>();
 
         for (Node origem : grafo.getListaDeAdjacencia()) {
             Point pontoOrigem = posicoes.get(origem);
@@ -156,17 +156,17 @@ public class PainelGrafo extends JPanel {
                 continue;
             }
 
-            for (Linha linha : origem.getAdjacencia()) {
-                if (arestasDesenhadas.contains(linha)) {
+            for (Ligacao ligacao : origem.getAdjacencia()) {
+                if (arestasDesenhadas.contains(ligacao)) {
                     continue;
                 }
 
                 Node destino;
 
-                if (linha.getOrigem() == origem) {
-                    destino = linha.getDestino();
+                if (ligacao.getOrigem() == origem) {
+                    destino = ligacao.getDestino();
                 } else {
-                    destino = linha.getOrigem();
+                    destino = ligacao.getOrigem();
                 }
 
                 Point pontoDestino = posicoes.get(destino);
@@ -179,18 +179,18 @@ public class PainelGrafo extends JPanel {
                     desenharLoop(
                             g2,
                             pontoOrigem,
-                            linha
+                            ligacao
                     );
                 } else {
                     desenharLinha(
                             g2,
                             pontoOrigem,
                             pontoDestino,
-                            linha
+                            ligacao
                     );
                 }
 
-                arestasDesenhadas.add(linha);
+                arestasDesenhadas.add(ligacao);
             }
         }
     }
@@ -199,7 +199,7 @@ public class PainelGrafo extends JPanel {
             Graphics2D g2,
             Point origem,
             Point destino,
-            Linha linha) {
+            Ligacao ligacao) {
 
         int x1 = origem.x;
         int y1 = origem.y;
@@ -229,7 +229,7 @@ public class PainelGrafo extends JPanel {
         );
 
         g2.drawString(
-                String.valueOf(linha.getPeso()),
+                String.valueOf(ligacao.getPeso()),
                 meioX,
                 meioY
         );
@@ -321,7 +321,7 @@ public class PainelGrafo extends JPanel {
     private void desenharLoop(
             Graphics2D g2,
             Point ponto,
-            Linha linha) {
+            Ligacao ligacao) {
 
         int tamanho = 30;
 
@@ -345,7 +345,7 @@ public class PainelGrafo extends JPanel {
         );
 
         g2.drawString(
-                String.valueOf(linha.getPeso()),
+                String.valueOf(ligacao.getPeso()),
                 ponto.x + 15,
                 ponto.y - 40
         );

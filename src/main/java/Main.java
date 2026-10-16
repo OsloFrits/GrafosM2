@@ -1,3 +1,12 @@
+import aplicacoes.Agm;
+import aplicacoes.BuscaProfundidade;
+import aplicacoes.Matrizes;
+import aplicacoes.Roy;
+import grafo.Linha;
+import grafo.Lista;
+import grafo.Node;
+import visual.ImagemGrafo;
+
 import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -101,7 +110,7 @@ public class Main {
         System.out.println("9  - Mostrar matrizes");
         System.out.println("10 - Executar AGM");
         System.out.println("11 - Executar DFS");
-        System.out.println("12 - Executar Roy");
+        System.out.println("12 - Executar aplicacoes.Roy");
         System.out.println("0  - Sair");
         System.out.println("============================");
     }
@@ -548,18 +557,18 @@ public class Main {
         }
 
         System.out.println(
-                "Executando Roy..."
+                "Executando aplicacoes.Roy..."
         );
 
         List<List<Node>> componentes =
                 Roy.executar(lista);
 
         System.out.println(
-                "Roy executado. Componentes encontrados: "
+                "aplicacoes.Roy executado. Componentes encontrados: "
                         + componentes.size()
         );
 
-        String arquivo = "Roy.png";
+        String arquivo = "aplicacoes.Roy.png";
 
         ImagemGrafo.salvarRoy(
                 lista,

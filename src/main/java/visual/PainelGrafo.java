@@ -1,3 +1,9 @@
+package visual;
+
+import grafo.Linha;
+import grafo.Lista;
+import grafo.Node;
+
 import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Font;
@@ -45,7 +51,7 @@ public class PainelGrafo extends JPanel {
     public PainelGrafo(Lista lista, List<List<Node>> componentes) {
         this.lista = lista;
         this.componentes = componentes;
-        this.titulo = "Roy";
+        this.titulo = "aplicacoes.Roy";
         setBackground(Color.WHITE);
         calcularPosicoes();
     }

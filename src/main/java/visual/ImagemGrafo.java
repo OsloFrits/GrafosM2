@@ -1,3 +1,8 @@
+package visual;
+
+import grafo.Lista;
+import grafo.Node;
+
 import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;

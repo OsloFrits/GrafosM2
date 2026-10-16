@@ -1,3 +1,5 @@
+package grafo;
+
 public class Linha {
     private Node origem, destino;
     private int peso;

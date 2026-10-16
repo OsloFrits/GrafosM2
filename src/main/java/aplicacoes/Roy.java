@@ -1,7 +1,7 @@
-/*
-public class Roy {
+package aplicacoes;/*
+public class aplicacoes.Roy {
 
-    public static void executar(Lista grafo) {
+    public static void executar(grafo.Lista grafo) {
 
         int quantidade = grafo.getListaDeAdjacencia().size();
         boolean[] usado = new boolean[quantidade];
@@ -39,7 +39,7 @@ public class Roy {
 
                 if (positivos[i] && negativos[i]) {
 
-                    Node vertice =
+                    grafo.Node vertice =
                             grafo.getListaDeAdjacencia().get(i);
 
                     System.out.print(
@@ -57,7 +57,7 @@ public class Roy {
     }
 
     private static void buscaPositiva(
-            Lista grafo,
+            grafo.Lista grafo,
             int atual,
             boolean[] visitados,
             boolean[] usado
@@ -70,7 +70,7 @@ public class Roy {
         visitados[atual] = true;
 
 
-        Node verticeAtual = grafo.getListaDeAdjacencia().get(atual);
+        grafo.Node verticeAtual = grafo.getListaDeAdjacencia().get(atual);
 
         for (int i = 0;
              i < grafo.getListaDeAdjacencia().size();
@@ -81,7 +81,7 @@ public class Roy {
             }
 
 
-            Node destino = grafo.getListaDeAdjacencia().get(i);
+            grafo.Node destino = grafo.getListaDeAdjacencia().get(i);
 
             if (existeAresta(
                     grafo,
@@ -99,7 +99,7 @@ public class Roy {
     }
 
     private static void buscaNegativa(
-            Lista grafo,
+            grafo.Lista grafo,
             int atual,
             boolean[] visitados,
             boolean[] usado
@@ -112,7 +112,7 @@ public class Roy {
         visitados[atual] = true;
 
 
-        Node verticeAtual =
+        grafo.Node verticeAtual =
                 grafo.getListaDeAdjacencia().get(atual);
 
         for (int i = 0;
@@ -125,7 +125,7 @@ public class Roy {
             }
 
 
-            Node origem =
+            grafo.Node origem =
                     grafo.getListaDeAdjacencia().get(i);
 
             if (existeAresta(
@@ -144,12 +144,12 @@ public class Roy {
     }
 
     private static boolean existeAresta(
-            Lista grafo,
-            Node origem,
-            Node destino
+            grafo.Lista grafo,
+            grafo.Node origem,
+            grafo.Node destino
     ) {
 
-        for (Linha linha : origem.getAdjacencia()) {
+        for (grafo.Linha linha : origem.getAdjacencia()) {
 
             if (grafo.isDirecionada()) {
 
@@ -176,6 +176,10 @@ public class Roy {
         return false;
     }
 }*/
+import grafo.Linha;
+import grafo.Lista;
+import grafo.Node;
+
 import java.util.ArrayList;
 import java.util.List;
 

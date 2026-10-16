@@ -1,3 +1,9 @@
+package aplicacoes;
+
+import grafo.Linha;
+import grafo.Lista;
+import grafo.Node;
+
 import java.util.ArrayList;
 import java.util.List;
 

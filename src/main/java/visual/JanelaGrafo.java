@@ -1,3 +1,6 @@
+package visual;
+
+import grafo.Lista;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;

@@ -33,6 +33,10 @@ public class GraphStreamView {
     public static int ALTURA_JANELA  = 900;
     /** Distancia entre os vertices: 1 = padrao do GraphStream; 2, 3... = mais afastados. */
     public static double ESPACAMENTO = 2.0;
+    /** Cor padrao do caminho minimo (arestas e vertices do caminho). */
+    public static Color COR_CAMINHO = new Color(0xE5, 0x39, 0x35); // vermelho
+    /** Espessura das arestas do caminho, em pixels. */
+    public static int ESPESSURA_CAMINHO = 5;
     // =======================
 
     private static final String CSS =
@@ -110,19 +114,39 @@ public class GraphStreamView {
     }
 
     /**
-     * Grafo original com um caminho em destaque (para o A*).
+     * Grafo original com um caminho em destaque (para o A*), na cor padrao COR_CAMINHO.
      * @param caminho vertices na ordem: origem, ..., destino
      */
-    public static Viewer exibirCaminho(Grafo grafo, List<Node> caminho, int custoTotal) {
-        Graph g = converter(grafo, "Caminho minimo - custo " + custoTotal, false);
+    public static Viewer exibirCaminho(Grafo grafo, List<Node> caminho, double custoTotal) {
+        return exibirCaminho(grafo, caminho, custoTotal, COR_CAMINHO);
+    }
+
+    /**
+     * Mesmo que o de cima, mas escolhendo a cor do caminho.
+     * Ex.: exibirCaminho(grafo, cm.getCaminho(), cm.getCustoTotal(), Color.GREEN);
+     */
+    public static Viewer exibirCaminho(Grafo grafo, List<Node> caminho, double custoTotal, Color cor) {
+        Graph g = converter(grafo, String.format("Caminho minimo - custo %.1f", custoTotal), false);
+        destacarCaminho(g, grafo, caminho, cor);
+        return mostrar(g);
+    }
+
+    /**
+     * Pinta um caminho num Graph ja convertido. Publico para poder destacar
+     * mais de um caminho no mesmo desenho (cada um de uma cor), se quiser.
+     */
+    public static void destacarCaminho(Graph g, Grafo grafo, List<Node> caminho, Color cor) {
+        if (caminho == null || caminho.isEmpty()) return;
         for (Node v : caminho) {
-            g.getNode(String.valueOf(v.getId())).setAttribute("ui.class", "caminho");
+            org.graphstream.graph.Node n = g.getNode(String.valueOf(v.getId()));
+            if (n != null) pintar(n, cor);
         }
         for (int i = 0; i + 1 < caminho.size(); i++) {
             Edge e = arestaEntre(g, caminho.get(i), caminho.get(i + 1), grafo.isDirecionada());
-            if (e != null) e.setAttribute("ui.class", "destaque");
+            if (e != null) {
+                e.setAttribute("ui.style", "fill-color: " + hex(cor) + "; size: " + ESPESSURA_CAMINHO + "px;");
+            }
         }
-        return mostrar(g);
     }
 
     /** Grafo original com as arestas da AGM destacadas em vermelho. */

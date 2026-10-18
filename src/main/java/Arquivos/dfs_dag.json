@@ -1,0 +1,16 @@
+{
+    "orientado": true,
+    "vertices": [
+        {"id": "v1", "latitude": null, "longitude": null},
+        {"id": "v2", "latitude": null, "longitude": null},
+        {"id": "v3", "latitude": null, "longitude": null},
+        {"id": "v4", "latitude": null, "longitude": null}
+    ],
+    "arestas": [
+        {"id": 1, "origem": "v1", "destino": "v2", "peso": 1},
+        {"id": 2, "origem": "v1", "destino": "v3", "peso": 1},
+        {"id": 3, "origem": "v2", "destino": "v4", "peso": 1},
+        {"id": 4, "origem": "v3", "destino": "v4", "peso": 1}
+    ],
+    "proximo_id_aresta": 5
+}

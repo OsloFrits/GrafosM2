@@ -1,8 +1,11 @@
 package grafo;
 
+import java.awt.*;
+
 public class Ligacao {
     private Node origem, destino;
     private int peso;
+    private Color cor = Color.BLACK;
 
     public Ligacao(Node origem, Node destino, int peso) {
         this.origem = origem;

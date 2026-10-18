@@ -9,11 +9,35 @@ public class Node {
     private String nome;
     private Color cor;
     private List<Ligacao> adjacencia;
+    private double latitude;
+    private double longitude;
 
     public Node(int id, String nome) {
         this.id = id;
         this.nome = nome;
         this.adjacencia = new ArrayList<>();
+    }
+
+    public Node(int id, String nome, double latitude, double longitude){
+        this(id, nome);
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+     public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public void addAdjacencia(Ligacao Adjacencia) {

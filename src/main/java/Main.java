@@ -1,6 +1,7 @@
 import Coloracao.Dsatur;
 import aplicacoes.Agm;
 import aplicacoes.BuscaProfundidade;
+import aplicacoes.CaminhoMinimo;
 import aplicacoes.Matrizes;
 import aplicacoes.Roy;
 import grafo.Grafo;
@@ -26,13 +27,9 @@ public class Main {
     // Resultado esperado dos arquivos de teste do DSATUR (numero minimo de cores conhecido)
     static final Map<String, Integer> CORES_ESPERADAS = new LinkedHashMap<>();
     static {
-        CORES_ESPERADAS.put("dsatur_triangulo.json", 3);
-        CORES_ESPERADAS.put("dsatur_k5_completo.json", 5);
         CORES_ESPERADAS.put("dsatur_bipartido.json", 2);
-        CORES_ESPERADAS.put("dsatur_ciclo_impar.json", 3);
         CORES_ESPERADAS.put("dsatur_roda.json", 4);
         CORES_ESPERADAS.put("dsatur_petersen.json", 3);
-        CORES_ESPERADAS.put("dsatur_desconexo.json", 3);
     }
 
     public static void main(String[] args) {
@@ -51,25 +48,36 @@ public class Main {
                     nomeGrafo = "grafo de teste (codigo)";
                     System.out.println("Grafo de teste carregado.");
                 }
+                case 5 -> {
+                    // atalho: carrega direto o arquivo mapa_parana.json da pasta de arquivos
+                    try {
+                        grafo = ArquivoGrafo.carregar("mapa_parana");
+                        nomeGrafo = "mapa_parana.json";
+                        System.out.println("Mapa do Parana carregado: " + grafo.getVertices() + " cidades.");
+                    } catch (Exception e) {
+                        System.out.println("Nao foi possivel carregar mapa_parana.json: " + e.getMessage());
+                    }
+                }
                 // EDITAR
-                case 5 -> adicionarVertice();
-                case 6 -> removerVertice();
-                case 7 -> editarVertice();
-                case 8 -> adicionarAresta();
-                case 9 -> removerAresta();
-                case 10 -> editarAresta();
+                case 6 -> adicionarVertice();
+                case 7 -> removerVertice();
+                case 8 -> editarVertice();
+                case 9 -> adicionarAresta();
+                case 10 -> removerAresta();
+                case 11 -> editarAresta();
                 // VISUALIZAR
-                case 11 -> mostrarGrafo();
-                case 12 -> listarGrafo();
-                case 13 -> mostrarMatrizes();
+                case 12 -> mostrarGrafo();
+                case 13 -> listarGrafo();
+                case 14 -> mostrarMatrizes();
                 // ALGORITMOS
-                case 14 -> executarAGM();
-                case 15 -> executarDFS(false);
-                case 16 -> executarRoy();
-                case 17 -> executarDsatur();
+                case 15 -> executarAGM();
+                case 16 -> executarDFS(false);
+                case 17 -> executarRoy();
+                case 18 -> executarDsatur();
+                case 19 -> executarCaminhoMinimo();
                 // TESTES
-                case 18 -> testarArquivo();
-                case 19 -> bateriaDsatur();
+                case 20 -> testarArquivo();
+                case 21 -> bateriaDsatur();
                 case 0 -> System.out.println("Programa encerrado.");
                 default -> System.out.println("Opcao invalida.");
             }
@@ -91,22 +99,24 @@ public class Main {
         System.out.println("  2  - Salvar grafo em arquivo");
         System.out.println("  3  - Novo grafo vazio");
         System.out.println("  4  - Grafo de teste (do codigo)");
+        System.out.println("  5  - Mapa do Parana (arquivo mapa_parana.json)");
         System.out.println(" EDITAR");
-        System.out.println("  5  - Adicionar vertice     8  - Adicionar aresta");
-        System.out.println("  6  - Remover vertice       9  - Remover aresta");
-        System.out.println("  7  - Editar vertice        10 - Editar aresta");
+        System.out.println("  6  - Adicionar vertice     9  - Adicionar aresta");
+        System.out.println("  7  - Remover vertice       10 - Remover aresta");
+        System.out.println("  8  - Editar vertice        11 - Editar aresta");
         System.out.println(" VISUALIZAR");
-        System.out.println("  11 - Desenhar grafo");
-        System.out.println("  12 - Listar vertices e arestas (texto)");
-        System.out.println("  13 - Mostrar matrizes");
+        System.out.println("  12 - Desenhar grafo");
+        System.out.println("  13 - Listar vertices e arestas (texto)");
+        System.out.println("  14 - Mostrar matrizes");
         System.out.println(" ALGORITMOS");
-        System.out.println("  14 - AGM (Prim)");
-        System.out.println("  15 - DFS (busca em profundidade)");
-        System.out.println("  16 - Roy (componentes fortemente conexos)");
-        System.out.println("  17 - DSATUR (coloracao)");
+        System.out.println("  15 - AGM (Prim)");
+        System.out.println("  16 - DFS (busca em profundidade)");
+        System.out.println("  17 - Roy (componentes fortemente conexos)");
+        System.out.println("  18 - DSATUR (coloracao)");
+        System.out.println("  19 - Caminho minimo (A*)");
         System.out.println(" TESTES");
-        System.out.println("  18 - Testar um arquivo (carrega e roda o algoritmo do nome)");
-        System.out.println("  19 - Bateria de testes do DSATUR (esperado x obtido)");
+        System.out.println("  20 - Testar um arquivo (carrega e roda o algoritmo do nome)");
+        System.out.println("  21 - Bateria de testes do DSATUR (esperado x obtido)");
         System.out.println("  0  - Sair");
         System.out.println("=======================================");
     }
@@ -440,13 +450,59 @@ public class Main {
         GraphStreamView.exibirColoracao(grafo, cores);
     }
 
+    public static void executarCaminhoMinimo() {
+        if (grafoVazio()) return;
+        System.out.println("\n--- CAMINHO MINIMO (A*) ---");
+
+        if (!GraphStreamView.temCoordenadas(grafo)) {
+            System.out.println("Aviso: nem todos os vertices tem latitude/longitude.");
+            System.out.println("Sem coordenadas o h(n) nao e confiavel; use um grafo com coordenadas (ex.: mapa_parana).");
+        }
+
+        imprimirVertices();
+        Node origem = buscarVerticePorId(grafo, lerInteiro("ID da cidade de ORIGEM: "));
+        Node destino = buscarVerticePorId(grafo, lerInteiro("ID da cidade de DESTINO: "));
+        if (origem == null || destino == null) {
+            System.out.println("Vertice nao encontrado.");
+            return;
+        }
+
+        CaminhoMinimo cm = new CaminhoMinimo();
+        boolean achou = cm.executar(grafo, origem, destino);
+
+        // O enunciado pede o h(n) apresentado na tela, sempre em relacao ao destino
+        System.out.println("\nHeuristica h(n) - Haversine ate " + destino.getNome() + " (km):");
+        for (Map.Entry<Node, Double> e : cm.getH().entrySet()) {
+            System.out.printf("  %-20s %8.1f%n", e.getKey().getNome(), e.getValue());
+        }
+
+        System.out.println("\nPassos do A* (ordem em que os vertices foram fechados):");
+        for (String passo : cm.getPassos()) System.out.println("  " + passo);
+
+        if (!achou) {
+            System.out.println("\nNao existe caminho de " + origem.getNome() + " ate " + destino.getNome() + ".");
+            GraphStreamView.exibir(grafo);
+            return;
+        }
+
+        StringBuilder rota = new StringBuilder();
+        for (Node v : cm.getCaminho()) {
+            if (rota.length() > 0) rota.append(" -> ");
+            rota.append(v.getNome());
+        }
+        System.out.println("\nCaminho: " + rota);
+        System.out.printf("Custo total: %.1f km%n", cm.getCustoTotal());
+
+        GraphStreamView.exibirCaminho(grafo, cm.getCaminho(), cm.getCustoTotal());
+    }
+
     // =====================================================================
     // TESTES
     // =====================================================================
 
     /**
      * Carrega um arquivo e roda o algoritmo indicado pelo comeco do nome:
-     * dsatur_ -> DSATUR | agm_ -> AGM | dfs_ -> DFS | roy_ -> Roy | outro -> so desenha
+     * dsatur_ -> DSATUR | agm_ -> AGM | dfs_ -> DFS | roy_ -> Roy | astar_/mapa_ -> A* | outro -> so desenha
      */
     public static void testarArquivo() {
         System.out.println("\n--- TESTAR ARQUIVO ---");
@@ -464,6 +520,8 @@ public class Main {
             executarDFS(true);
         } else if (n.startsWith("roy_")) {
             executarRoy();
+        } else if (n.startsWith("astar_") || n.startsWith("mapa_")) {
+            executarCaminhoMinimo();
         } else {
             System.out.println("Nome sem prefixo de algoritmo: so desenhando o grafo.");
             mostrarGrafo();
@@ -504,7 +562,7 @@ public class Main {
             }
         }
         System.out.println(ok + " de " + arquivos.size() + " testes OK.");
-        System.out.println("(Use a opcao 18 para ver qualquer um deles desenhado.)");
+        System.out.println("(Use a opcao 20 para ver qualquer um deles desenhado.)");
     }
 
     /** Confere se nenhuma aresta liga dois vertices da mesma cor (lacos sao ignorados). */

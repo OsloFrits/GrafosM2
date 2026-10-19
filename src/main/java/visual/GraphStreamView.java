@@ -37,10 +37,12 @@ public class GraphStreamView {
     public static Color COR_CAMINHO = new Color(0xE5, 0x39, 0x35); // vermelho
     /** Espessura das arestas do caminho, em pixels. */
     public static int ESPESSURA_CAMINHO = 5;
+    /** true = se TODOS os vertices tiverem latitude/longitude, desenha na posicao do mapa. */
+    public static boolean USAR_COORDENADAS = true;
     // =======================
 
     private static final String CSS =
-            "graph { padding: 40px; fill-color: white; }" +
+            "graph { padding: 100px; fill-color: white; }" +
                     "node { size-mode: fit; padding: 9px; fill-color: #4a90d9; stroke-mode: plain; stroke-color: #1f4e79;" +
                     "       text-size: 16px; text-color: white; text-style: bold; text-alignment: center; }" +
                     "node.claro { text-color: black; }" +
@@ -73,13 +75,21 @@ public class GraphStreamView {
         g.setAttribute("ui.antialias");
         g.setAttribute("ui.title", titulo);
 
+        boolean noMapa = USAR_COORDENADAS && temCoordenadas(grafo);
+        double fatorLongitude = Math.cos(Math.toRadians(latitudeMedia(grafo))); // corrige o "achatamento"
+
         for (Node v : grafo.getListaDeAdjacencia()) {
             org.graphstream.graph.Node n = g.addNode(String.valueOf(v.getId()));
             n.setAttribute("ui.label", v.getNome());
+            if (noMapa) {
+                // x = longitude, y = latitude: as cidades ficam onde estao no mapa
+                n.setAttribute("xy", v.getLongitude() * fatorLongitude, v.getLatitude());
+            }
             if (usarCores && v.getCor() != null) {
                 pintar(n, v.getCor());
             }
         }
+        if (noMapa) g.setAttribute("posicao.fixa", true);
 
         // Em grafo nao direcionado a MESMA Ligacao esta na lista dos dois nos,
         // entao guardo as ja adicionadas para nao desenhar duas vezes.
@@ -193,7 +203,9 @@ public class GraphStreamView {
 
     private static Viewer mostrar(Graph g) {
         SwingViewer viewer = new SwingViewer(g, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
-        viewer.enableAutoLayout();                       // posiciona os vertices sozinho
+        if (!g.hasAttribute("posicao.fixa")) {
+            viewer.enableAutoLayout();                   // posiciona os vertices sozinho
+        }
         ViewPanel painel = (ViewPanel) viewer.addDefaultView(false); // false = eu crio a janela
 
         SwingUtilities.invokeLater(() -> {
@@ -205,6 +217,21 @@ public class GraphStreamView {
             janela.setVisible(true);
         });
         return viewer;
+    }
+
+    /** true se todos os vertices tem coordenada (latitude e longitude diferentes de 0). */
+    public static boolean temCoordenadas(Grafo grafo) {
+        if (grafo.getListaDeAdjacencia().isEmpty()) return false;
+        for (Node v : grafo.getListaDeAdjacencia()) {
+            if (v.getLatitude() == 0 && v.getLongitude() == 0) return false;
+        }
+        return true;
+    }
+
+    private static double latitudeMedia(Grafo grafo) {
+        double soma = 0;
+        for (Node v : grafo.getListaDeAdjacencia()) soma += v.getLatitude();
+        return grafo.getListaDeAdjacencia().isEmpty() ? 0 : soma / grafo.getListaDeAdjacencia().size();
     }
 
     private static void pintar(org.graphstream.graph.Node n, Color cor) {

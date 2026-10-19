@@ -33,9 +33,47 @@ public class ArquivoGrafo {
     /** Pasta onde ficam os grafos (na raiz do projeto, ao lado do pom.xml). */
     public static final String PASTA = "arquivos";
 
+    private static Path pastaEncontrada = null;
+
+    /**
+     * Acha a pasta "arquivos" (maiuscula ou minuscula) dentro do projeto, onde quer que ela esteja:
+     * primeiro na raiz do projeto, depois procurando nas subpastas (ex.: src/main/java/Arquivos).
+     * Prefere uma pasta que tenha .json dentro. Se nao achar nenhuma, usa "arquivos" na raiz.
+     */
+    public static Path pasta() {
+        if (pastaEncontrada != null && Files.isDirectory(pastaEncontrada)) return pastaEncontrada;
+
+        Path raiz = Path.of("").toAbsolutePath();
+        Path vazia = null;
+        try (var caminhos = Files.walk(raiz, 6)) {
+            List<Path> candidatas = caminhos
+                    .filter(Files::isDirectory)
+                    .filter(d -> d.getFileName() != null && d.getFileName().toString().equalsIgnoreCase(PASTA))
+                    .filter(d -> !d.toString().contains("target") && !d.toString().contains(".git")
+                            && !d.toString().contains(".idea"))
+                    .sorted((a, b) -> Integer.compare(a.getNameCount(), b.getNameCount())) // mais perto da raiz primeiro
+                    .toList();
+            for (Path d : candidatas) {
+                if (temJson(d)) return pastaEncontrada = d;
+                if (vazia == null) vazia = d;
+            }
+        } catch (IOException e) {
+            // se der erro procurando, cai no padrao abaixo
+        }
+        return pastaEncontrada = (vazia != null ? vazia : raiz.resolve(PASTA));
+    }
+
+    private static boolean temJson(Path pasta) {
+        try (var arquivos = Files.list(pasta)) {
+            return arquivos.anyMatch(a -> a.getFileName().toString().toLowerCase().endsWith(".json"));
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
     /** Lista os .json da pasta "arquivos", em ordem alfabetica. Cria a pasta se nao existir. */
     public static List<String> listarArquivos() throws IOException {
-        Path pasta = Path.of(PASTA);
+        Path pasta = pasta();
         Files.createDirectories(pasta);
         try (var arquivos = Files.list(pasta)) {
             return arquivos.map(a -> a.getFileName().toString())
@@ -55,7 +93,7 @@ public class ArquivoGrafo {
         if (!n.toLowerCase().endsWith(".json")) n += ".json";
         Path p = Path.of(n);
         if (p.isAbsolute() || p.getParent() != null) return p; // ja veio com pasta
-        return Path.of(PASTA, n);
+        return pasta().resolve(n);
     }
 
     // ------------------------------------------------------------------

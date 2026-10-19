@@ -1,0 +1,27 @@
+{
+    "orientado": false,
+    "vertices": [
+        {"id": "Florianópolis", "latitude": -27.5954, "longitude": -48.548},
+        {"id": "Itajaí", "latitude": -26.9078, "longitude": -48.6619},
+        {"id": "Blumenau", "latitude": -26.9194, "longitude": -49.0661},
+        {"id": "Joinville", "latitude": -26.3045, "longitude": -48.8487},
+        {"id": "Lages", "latitude": -27.8157, "longitude": -50.3264},
+        {"id": "Chapecó", "latitude": -27.1004, "longitude": -52.6152},
+        {"id": "Criciúma", "latitude": -28.6775, "longitude": -49.3697},
+        {"id": "Joaçaba", "latitude": -27.1721, "longitude": -51.5108}
+    ],
+    "arestas": [
+        {"id": 1, "origem": "Florianópolis", "destino": "Itajaí", "peso": 95},
+        {"id": 2, "origem": "Itajaí", "destino": "Joinville", "peso": 90},
+        {"id": 3, "origem": "Itajaí", "destino": "Blumenau", "peso": 55},
+        {"id": 4, "origem": "Blumenau", "destino": "Joinville", "peso": 100},
+        {"id": 5, "origem": "Florianópolis", "destino": "Criciúma", "peso": 200},
+        {"id": 6, "origem": "Florianópolis", "destino": "Lages", "peso": 225},
+        {"id": 7, "origem": "Blumenau", "destino": "Lages", "peso": 230},
+        {"id": 8, "origem": "Criciúma", "destino": "Lages", "peso": 210},
+        {"id": 9, "origem": "Lages", "destino": "Joaçaba", "peso": 170},
+        {"id": 10, "origem": "Joaçaba", "destino": "Chapecó", "peso": 145},
+        {"id": 11, "origem": "Lages", "destino": "Chapecó", "peso": 320}
+    ],
+    "proximo_id_aresta": 12
+}

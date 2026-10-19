@@ -76,6 +76,17 @@ public class Main {
                 case 13:
                     executarDsatur(grafo);
                     break;
+                case 14: {
+                    Grafo lido = carregarArquivo();
+                    if (lido != null) {
+                        grafo = lido;
+                        direcionado = grafo.isDirecionada();
+                    }
+                    break;
+                }
+                case 15:
+                    salvarArquivo(grafo);
+                    break;
                 case 0:
                     System.out.println("Programa encerrado.");
                     break;
@@ -106,6 +117,8 @@ public class Main {
         System.out.println("11 - Executar DFS");
         System.out.println("12 - Executar Roy");
         System.out.println("13 - Executar DSATUR (coloracao)");
+        System.out.println("14 - Carregar grafo de arquivo (.json)");
+        System.out.println("15 - Salvar grafo em arquivo (.json)");
         System.out.println("0  - Sair");
         System.out.println("============================");
     }
@@ -558,6 +571,60 @@ public class Main {
         }
 
         GraphStreamView.exibirColoracao(grafo, cores);
+    }
+
+    public static Grafo carregarArquivo() {
+
+        System.out.println("\n--- CARREGAR GRAFO ---");
+
+        List<String> arquivos;
+        try {
+            arquivos = ArquivoGrafo.listarArquivos();
+        } catch (Exception e) {
+            System.out.println("Nao foi possivel ler a pasta " + ArquivoGrafo.PASTA + ": " + e.getMessage());
+            return null;
+        }
+
+        if (arquivos.isEmpty()) {
+            System.out.println("Nenhum .json na pasta \"" + ArquivoGrafo.PASTA + "\".");
+        } else {
+            System.out.println("Arquivos em \"" + ArquivoGrafo.PASTA + "\":");
+            for (int i = 0; i < arquivos.size(); i++) {
+                System.out.println("  " + (i + 1) + " - " + arquivos.get(i));
+            }
+        }
+
+        String escolha = lerTexto("Numero ou nome do arquivo: ");
+        String nome = escolha;
+        try {
+            int numero = Integer.parseInt(escolha);
+            if (numero >= 1 && numero <= arquivos.size()) nome = arquivos.get(numero - 1);
+        } catch (NumberFormatException e) {
+            // nao e numero: usa o texto como nome do arquivo
+        }
+
+        try {
+            Grafo grafo = ArquivoGrafo.carregar(nome);
+            System.out.println("Grafo carregado (" + nome + "): " + grafo.getVertices() + " vertices, "
+                    + grafo.getLinhas() + " arestas, "
+                    + (grafo.isDirecionada() ? "direcionado." : "nao direcionado."));
+            return grafo;
+        } catch (Exception e) {
+            System.out.println("Nao foi possivel carregar: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public static void salvarArquivo(Grafo grafo) {
+
+        System.out.println("\n--- SALVAR GRAFO ---");
+        String nome = lerTexto("Nome do arquivo (vai para a pasta " + ArquivoGrafo.PASTA + "): ");
+
+        try {
+            System.out.println("Grafo salvo em " + ArquivoGrafo.salvar(grafo, nome));
+        } catch (Exception e) {
+            System.out.println("Nao foi possivel salvar: " + e.getMessage());
+        }
     }
 
     public static int lerInteiro(

@@ -1,6 +1,7 @@
 import Coloracao.Dsatur;
 import aplicacoes.Agm;
 import aplicacoes.BuscaProfundidade;
+import aplicacoes.CaminhoMinimo;
 import aplicacoes.Matrizes;
 import aplicacoes.Roy;
 import grafo.Ligacao;
@@ -10,6 +11,7 @@ import visual.GraphStreamView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
@@ -76,16 +78,12 @@ public class Main {
                 case 13:
                     executarDsatur(grafo);
                     break;
-                case 14: {
-                    Grafo lido = carregarArquivo();
-                    if (lido != null) {
-                        grafo = lido;
-                        direcionado = grafo.isDirecionada();
-                    }
+                case 14:
+                    grafo = MapaParana.criar();
+                    System.out.println("Mapa do Parana carregado (12 cidades, nao direcionado, com latitude/longitude).");
                     break;
-                }
                 case 15:
-                    salvarArquivo(grafo);
+                    executarAEstrela(grafo);
                     break;
                 case 0:
                     System.out.println("Programa encerrado.");
@@ -117,8 +115,8 @@ public class Main {
         System.out.println("11 - Executar DFS");
         System.out.println("12 - Executar Roy");
         System.out.println("13 - Executar DSATUR (coloracao)");
-        System.out.println("14 - Carregar grafo de arquivo (.json)");
-        System.out.println("15 - Salvar grafo em arquivo (.json)");
+        System.out.println("14 - Carregar mapa do Parana (teste do A*)");
+        System.out.println("15 - Executar A* (caminho minimo)");
         System.out.println("0  - Sair");
         System.out.println("============================");
     }
@@ -134,7 +132,10 @@ public class Main {
         }
 
         String nome = lerTexto("Nome: ");
-        grafo.addVertice(new Node(id, nome));
+        // Coordenadas sao usadas pelo A* (h(n) por Haversine)
+        double latitude = lerDouble("Latitude (ex.: -25.4284): ");
+        double longitude = lerDouble("Longitude (ex.: -49.2733): ");
+        grafo.addVertice(new Node(id, nome, latitude, longitude));
         System.out.println("Vertice adicionado.");
     }
 
@@ -180,6 +181,10 @@ public class Main {
         String novoNome = lerTexto("Novo nome: ");
 
         vertice.setNome(novoNome);
+
+        System.out.println("Coordenadas atuais: " + vertice.getLatitude() + ", " + vertice.getLongitude());
+        vertice.setLatitude(lerDoubleOuManter("Nova latitude (Enter mantem): ", vertice.getLatitude()));
+        vertice.setLongitude(lerDoubleOuManter("Nova longitude (Enter mantem): ", vertice.getLongitude()));
         System.out.println("Vertice alterado.");
     }
 
@@ -573,57 +578,93 @@ public class Main {
         GraphStreamView.exibirColoracao(grafo, cores);
     }
 
-    public static Grafo carregarArquivo() {
+    public static void executarAEstrela(Grafo grafo) {
 
-        System.out.println("\n--- CARREGAR GRAFO ---");
-
-        List<String> arquivos;
-        try {
-            arquivos = ArquivoGrafo.listarArquivos();
-        } catch (Exception e) {
-            System.out.println("Nao foi possivel ler a pasta " + ArquivoGrafo.PASTA + ": " + e.getMessage());
-            return null;
+        if (grafo.getVertices() < 2) {
+            System.out.println("E necessario ter pelo menos 2 vertices.");
+            return;
         }
 
-        if (arquivos.isEmpty()) {
-            System.out.println("Nenhum .json na pasta \"" + ArquivoGrafo.PASTA + "\".");
-        } else {
-            System.out.println("Arquivos em \"" + ArquivoGrafo.PASTA + "\":");
-            for (int i = 0; i < arquivos.size(); i++) {
-                System.out.println("  " + (i + 1) + " - " + arquivos.get(i));
+        System.out.println("\n--- A* (CAMINHO MINIMO) ---");
+        System.out.println("Vertices disponiveis:");
+        for (Node v : grafo.getListaDeAdjacencia()) {
+            System.out.println("  " + v.getId() + " - " + v.getNome());
+        }
+
+        Node origem = buscarVerticePorId(grafo, lerInteiro("ID origem: "));
+        if (origem == null) {
+            System.out.println("Origem nao encontrada.");
+            return;
+        }
+
+        Node destino = buscarVerticePorId(grafo, lerInteiro("ID destino: "));
+        if (destino == null) {
+            System.out.println("Destino nao encontrado.");
+            return;
+        }
+
+        for (Node v : grafo.getListaDeAdjacencia()) {
+            for (Ligacao l : v.getAdjacencia()) {
+                if (l.getPeso() < 0) {
+                    System.out.println("A* nao funciona com pesos negativos.");
+                    return;
+                }
             }
         }
 
-        String escolha = lerTexto("Numero ou nome do arquivo: ");
-        String nome = escolha;
-        try {
-            int numero = Integer.parseInt(escolha);
-            if (numero >= 1 && numero <= arquivos.size()) nome = arquivos.get(numero - 1);
-        } catch (NumberFormatException e) {
-            // nao e numero: usa o texto como nome do arquivo
+        CaminhoMinimo aEstrela = new CaminhoMinimo();
+        boolean achou = aEstrela.executar(grafo, origem, destino);
+
+        // Tabela h(n): distancia em linha reta (Haversine) ate o DESTINO
+        System.out.println("\nHeuristica h(n) = distancia Haversine ate " + destino.getNome() + " (km):");
+        for (Map.Entry<Node, Double> e : aEstrela.getH().entrySet()) {
+            System.out.printf("  %-20s %8.1f%n", e.getKey().getNome(), e.getValue());
         }
 
-        try {
-            Grafo grafo = ArquivoGrafo.carregar(nome);
-            System.out.println("Grafo carregado (" + nome + "): " + grafo.getVertices() + " vertices, "
-                    + grafo.getLinhas() + " arestas, "
-                    + (grafo.isDirecionada() ? "direcionado." : "nao direcionado."));
-            return grafo;
-        } catch (Exception e) {
-            System.out.println("Nao foi possivel carregar: " + e.getMessage());
-            return null;
+        System.out.println("\nOrdem de expansao (lista fechada):");
+        for (String passo : aEstrela.getPassos()) {
+            System.out.println("  " + passo);
+        }
+
+        if (!achou) {
+            System.out.println("\nNao existe caminho de " + origem.getNome() + " ate " + destino.getNome() + ".");
+            GraphStreamView.exibir(grafo);
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (Node v : aEstrela.getCaminho()) {
+            if (sb.length() > 0) sb.append(" -> ");
+            sb.append(v.getNome());
+        }
+        System.out.println("\nCaminho minimo: " + sb);
+        System.out.printf("Custo total: %.0f%n", aEstrela.getCustoTotal());
+
+        GraphStreamView.exibirCaminho(grafo, aEstrela.getCaminho(), (int) Math.round(aEstrela.getCustoTotal()));
+    }
+
+    public static double lerDouble(String mensagem) {
+        while (true) {
+            System.out.print(mensagem);
+            String entrada = scanner.nextLine().trim().replace(',', '.');
+            try {
+                return Double.parseDouble(entrada);
+            } catch (NumberFormatException e) {
+                System.out.println("Digite um numero (ex.: -25.43).");
+            }
         }
     }
 
-    public static void salvarArquivo(Grafo grafo) {
-
-        System.out.println("\n--- SALVAR GRAFO ---");
-        String nome = lerTexto("Nome do arquivo (vai para a pasta " + ArquivoGrafo.PASTA + "): ");
-
-        try {
-            System.out.println("Grafo salvo em " + ArquivoGrafo.salvar(grafo, nome));
-        } catch (Exception e) {
-            System.out.println("Nao foi possivel salvar: " + e.getMessage());
+    public static double lerDoubleOuManter(String mensagem, double atual) {
+        while (true) {
+            System.out.print(mensagem);
+            String entrada = scanner.nextLine().trim().replace(',', '.');
+            if (entrada.isEmpty()) return atual;
+            try {
+                return Double.parseDouble(entrada);
+            } catch (NumberFormatException e) {
+                System.out.println("Digite um numero (ex.: -25.43) ou Enter para manter.");
+            }
         }
     }
 

@@ -37,7 +37,7 @@ public class CaminhoMinimo {
         double x = Math.sin(dLat / 2) * Math.sin(dLat / 2) 
                 + Math.cos(lat1) * Math.cos(lat2)
                 * Math.sin(dLon / 2) * Math.sin(dLon /2);
-        return 2 * RAIO_TERRA_KM *Math.atan(Math.sqrt(x), Math.sqtr(1 - x));
+        return 2 * RAIO_TERRA_KM * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
     }
 
     //Monta tabela h(n) de todos os vertices em relacao ao destino
@@ -52,7 +52,7 @@ public class CaminhoMinimo {
     //Executa o A* da origem ate o destino: TRue se encontrado
     public boolean executar(Grafo grafo, Node origem, Node destino){
         caminho.clear();
-        Passos.clear();
+        passos.clear();
         custoTotal = -1;
 
         calcularHeuristica(grafo, destino);
@@ -70,7 +70,7 @@ public class CaminhoMinimo {
 
             if (fechados.contains(atual)) continue;
 
-            //A PriorityQueue do Java não frixa mudar o f de um elemento que já está dentro dela.
+            //A PriorityQueue do Java não deixa mudar o f de um elemento que já está dentro dela.
             //Quando o algoritmo acha um caminho melhor para uma cidade que já está na lista aberta, coloca a cidade de novo na lista com o novo f.
             //A entrada antiga continua lá dentro.
             passos.add(String.format("Fecha %-18s g=%7.1f  h=%7.1f  f=%7.1f",
@@ -84,7 +84,7 @@ public class CaminhoMinimo {
 
             fechados.add(atual);
 
-            For(Ligacao ligacao : atual.getAdjacencia()){
+            for (Ligacao ligacao : atual.getAdjacencia()){
                 Node vizinho = grafo.isDirecionada() ? ligacao.getDestino() : ligacao.getOutraPonta(atual);
 
                 if(vizinho == atual || fechados.contains(vizinho)) continue;
@@ -95,7 +95,7 @@ public class CaminhoMinimo {
                 if (novoG < g.getOrDefault(vizinho, Double.MAX_VALUE)){
                     g.put(vizinho, novoG);
                     pai.put(vizinho, atual);
-                    abertos.add(new Entrada(vizinho, novoG = h.get(vizinho)));
+                    abertos.add(new Entrada(vizinho, novoG + h.get(vizinho)));
                 }
             }
         }
